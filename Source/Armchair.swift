@@ -533,7 +533,7 @@ public func onDidDeclineToRate(didDeclineToRateClosure: ArmchairClosure?) {
 public func onDidOptToRate(didOptToRateClosure: ArmchairClosure?) {
     Manager.defaultManager.didOptToRateClosure = didOptToRateClosure
 }
-public func setCstomRateHandlerClosure(customRateHandlerClosure: ArmchairClosure?) {
+public func setCustomRateHandlerClosure(customRateHandlerClosure: ArmchairClosure?) {
     Manager.defaultManager.customRateHandlerClosure = customRateHandlerClosure
 }
 public func onDidOptToRemindLater(didOptToRemindLaterClosure: ArmchairClosure?) {
