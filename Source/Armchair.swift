@@ -533,6 +533,9 @@ public func onDidDeclineToRate(didDeclineToRateClosure: ArmchairClosure?) {
 public func onDidOptToRate(didOptToRateClosure: ArmchairClosure?) {
     Manager.defaultManager.didOptToRateClosure = didOptToRateClosure
 }
+public func setCstomRateHandlerClosure(customRateHandlerClosure: ArmchairClosure?) {
+    Manager.defaultManager.customRateHandlerClosure = customRateHandlerClosure
+}
 public func onDidOptToRemindLater(didOptToRemindLaterClosure: ArmchairClosure?) {
     Manager.defaultManager.didOptToRemindLaterClosure = didOptToRemindLaterClosure
 }
@@ -862,6 +865,7 @@ public class Manager : ArmchairManager {
     // MARK: Optional Closures
     var didDisplayAlertClosure: ArmchairClosure?
     var didDeclineToRateClosure: ArmchairClosure?
+    var customRateHandlerClosure: ArmchairClosure? // This closure will add a custom handling over opt in to rate
     var didOptToRateClosure: ArmchairClosure?
     var didOptToRemindLaterClosure: ArmchairClosure?
 
@@ -1301,7 +1305,12 @@ public class Manager : ArmchairManager {
     }
 
     private func _rateApp() {
-        rateApp()
+        if let customHandlerClosure = customRateHandlerClosure {
+            customHandlerClosure()
+        } else {
+            rateApp()
+        }
+      
         if let closure = didOptToRateClosure {
             closure()
         }
