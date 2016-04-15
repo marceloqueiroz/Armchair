@@ -503,6 +503,14 @@ public func rateApp() {
     Manager.defaultManager.rateApp()
 }
 
+/*
+ * Tells Armchair the app was rated and records the fact that this has happened, so the
+ * user won't be prompted again to rate the app.
+ */
+public func markAsRated() {
+  Manager.defaultManager.markAsRated()
+}
+
 #if os(iOS)
     /*
     * Tells Armchair to immediately close any open rating modals
@@ -532,9 +540,6 @@ public func onDidDeclineToRate(didDeclineToRateClosure: ArmchairClosure?) {
 }
 public func onDidOptToRate(didOptToRateClosure: ArmchairClosure?) {
     Manager.defaultManager.didOptToRateClosure = didOptToRateClosure
-}
-public func setCustomRateHandlerClosure(customRateHandlerClosure: ArmchairClosure?) {
-    Manager.defaultManager.customRateHandlerClosure = customRateHandlerClosure
 }
 public func onDidOptToRemindLater(didOptToRemindLaterClosure: ArmchairClosure?) {
     Manager.defaultManager.didOptToRemindLaterClosure = didOptToRemindLaterClosure
@@ -865,7 +870,6 @@ public class Manager : ArmchairManager {
     // MARK: Optional Closures
     var didDisplayAlertClosure: ArmchairClosure?
     var didDeclineToRateClosure: ArmchairClosure?
-    var customRateHandlerClosure: ArmchairClosure? // This closure will add a custom handling over opt in to rate
     var didOptToRateClosure: ArmchairClosure?
     var didOptToRemindLaterClosure: ArmchairClosure?
 
@@ -1305,22 +1309,21 @@ public class Manager : ArmchairManager {
     }
 
     private func _rateApp() {
-        if let customHandlerClosure = customRateHandlerClosure {
-            customHandlerClosure()
-        } else {
-            rateApp()
-        }
+        rateApp()
       
         if let closure = didOptToRateClosure {
             closure()
         }
     }
-
-    private func rateApp() {
-
+  
+    private func markAsRated() {
         userDefaultsObject?.setBool(true, forKey: keyForArmchairKeyType(ArmchairKey.RatedCurrentVersion))
         userDefaultsObject?.setBool(true, forKey: keyForArmchairKeyType(ArmchairKey.RatedAnyVersion))
         userDefaultsObject?.synchronize()
+    }
+
+    private func rateApp() {
+        self.markAsRated()
 
 #if os(iOS)
         // Use the in-app StoreKit view if set, available (iOS 7+) and imported. This works in the simulator.
