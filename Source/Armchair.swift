@@ -511,6 +511,10 @@ public func markAsRated() {
   Manager.defaultManager.markAsRated()
 }
 
+public func remindMeLater() {
+  Manager.defaultManager.remindMeLater()
+}
+
 #if os(iOS)
     /*
     * Tells Armchair to immediately close any open rating modals
